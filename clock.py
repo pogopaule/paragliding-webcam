@@ -1,5 +1,8 @@
 from run import run
 from apscheduler.schedulers.blocking import BlockingScheduler
+import logging
+
+logging.basicConfig()
 
 sched = BlockingScheduler()
 
