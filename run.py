@@ -15,7 +15,7 @@ def run():
         print(e.error_message)
 
     time = datetime.datetime.now()
-    hour = str(time.hour).zfill(2)
+    hour = str(time.hour + 2).zfill(2)
     minute = str(time.minute / 15 * 15).zfill(2)
     url = "http://www.dgfc-suedschwarzwald.de/webcam2/image-{0}-{1}.jpg".format(hour, minute)
     try:
