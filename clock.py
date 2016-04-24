@@ -6,7 +6,7 @@ logging.basicConfig()
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', minute='*/15', hour='9-20')
+@sched.scheduled_job('cron', minute='*/15', hour='7-18')
 def timed_job():
     run()
 
