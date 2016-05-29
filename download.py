@@ -5,6 +5,7 @@ import random
 
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
+from subprocess import call
 
 places = [{
     'name': 'Kandel',
@@ -50,3 +51,5 @@ for place in places:
             filename = time.strftime('%Y-%m-%d_%H-%M.jpg', time.localtime(image.datetime))
             fullfilename = os.path.join( path, filename)
             urllib.urlretrieve(image.link, fullfilename)
+            call(['convert', '-crop', '1500x600+0+500', fullfilename, fullfilename[:-4] + '_crop' + fullfilename[-4:]])
+            os.remove(fullfilename)
