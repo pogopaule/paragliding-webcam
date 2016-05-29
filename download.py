@@ -19,18 +19,20 @@ places = [{
             'id': 'NX3p8'
         }
     ]
-}, {
-    'name': 'Gschasi',
-    'albums': [
-        {
-            'name': 'positive',
-            'id': 'OthOo',
-        }, {
-            'name': 'negative',
-            'id': 'jQIwZ'
-        }
-    ]
-}]
+}
+# , {
+    # 'name': 'Gschasi',
+    # 'albums': [
+        # {
+            # 'name': 'positive',
+            # 'id': 'OthOo',
+        # }, {
+            # 'name': 'negative',
+            # 'id': 'jQIwZ'
+        # }
+    # ]
+# }
+]
 
 
 def album_size(album):
