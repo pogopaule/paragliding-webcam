@@ -6,6 +6,7 @@ import random
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
 from subprocess import call
+from PIL import Image
 
 places = [{
     'name': 'Kandel',
@@ -50,6 +51,4 @@ for place in places:
         for image in random.sample(client.get_album_images(album['id']), min_image_number):
             filename = time.strftime('%Y-%m-%d_%H-%M.jpg', time.localtime(image.datetime))
             fullfilename = os.path.join( path, filename)
-            urllib.urlretrieve(image.link, fullfilename)
-            call(['convert', '-crop', '1500x600+0+500', fullfilename, fullfilename[:-4] + '_crop' + fullfilename[-4:]])
-            os.remove(fullfilename)
+            Image.open(urllib.urlopen(image.link)).crop((0, 500, 1500, 1100)).save(fullfilename)
