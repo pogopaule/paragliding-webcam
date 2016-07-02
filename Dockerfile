@@ -1,6 +1,6 @@
 FROM kaixhin/caffe:latest
 
-ADD kandel.caffemodel deploy.prototxt positive-probability.py utils.py paragliding-webcam/
+ADD caffe/kandel.caffemodel caffe/deploy.prototxt caffe/positive-probability.py common/utils.py paragliding-webcam/
 
 # https://stackoverflow.com/questions/37379611/how-do-i-interpret-pycaffe-classify-py-output
 ADD caffe-fixes/classifier.py python/caffe/

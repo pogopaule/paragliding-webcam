@@ -1,4 +1,4 @@
-from run import run
+from heroku.run import run
 from apscheduler.schedulers.blocking import BlockingScheduler
 import logging
 

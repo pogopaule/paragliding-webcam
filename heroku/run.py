@@ -3,7 +3,7 @@ import datetime
 
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
-from . import utils
+from common.utils import current_image_url
 
 def run():
     client = ImgurClient(os.environ['IMGUR_CLIENT_ID'], os.environ['IMGUR_CLIENT_SECRET'], os.environ['IMGUR_ACCESS_TOKEN'], os.environ['IMGUR_REFRESH_TOKEN'])
