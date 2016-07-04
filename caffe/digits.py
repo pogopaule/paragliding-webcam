@@ -6,9 +6,10 @@ Classify an image using individual model files
 Use this script as an example to build your own tool
 """
 
-import argparse
 import os
+import sys
 import time
+import urllib
 
 from google.protobuf import text_format
 import numpy as np
@@ -79,7 +80,7 @@ def get_transformer(deploy_file, mean_file=None):
 
     return t
 
-def load_image(path, height, width, mode='RGB'):
+def load_image(url, height, width, mode='RGB'):
     """
     Load an image from disk
     Returns an np.ndarray (channels x width x height)
@@ -91,7 +92,7 @@ def load_image(path, height, width, mode='RGB'):
     mode -- the PIL mode that the image should be converted to
         (RGB for color or L for grayscale)
     """
-    image = PIL.Image.open(path)
+    image = PIL.Image.open(urllib.urlopen(url)).crop((0, 500, 1500, 1100))
     image = image.convert(mode)
     image = np.array(image)
     # squash
@@ -140,27 +141,8 @@ def forward_pass(images, net, transformer, batch_size=None):
 
     return scores
 
-def read_labels(labels_file):
-    """
-    Returns a list of strings
-    Arguments:
-    labels_file -- path to a .txt file
-    """
-    if not labels_file:
-        print 'WARNING: No labels file provided. Results will be difficult to interpret.'
-        return None
-
-    labels = []
-    with open(labels_file) as infile:
-        for line in infile:
-            label = line.strip()
-            if label:
-                labels.append(label)
-    assert len(labels), 'No labels found'
-    return labels
-
 def classify(caffemodel, deploy_file, image_files,
-        mean_file=None, labels_file=None, batch_size=None, use_gpu=True):
+        mean_file=None, batch_size=None, use_gpu=True):
     """
     Classify some images against a Caffe model and print the results
     Arguments:
@@ -169,7 +151,6 @@ def classify(caffemodel, deploy_file, image_files,
     image_files -- list of paths to images
     Keyword arguments:
     mean_file -- path to a .binaryproto
-    labels_file path to a .txt file
     use_gpu -- if True, run inference on the GPU
     """
     # Load the model and images
@@ -183,61 +164,14 @@ def classify(caffemodel, deploy_file, image_files,
     else:
         raise ValueError('Invalid number for channels: %s' % channels)
     images = [load_image(image_file, height, width, mode) for image_file in image_files]
-    labels = read_labels(labels_file)
 
     # Classify the image
     scores = forward_pass(images, net, transformer, batch_size=batch_size)
 
-    ### Process the results
-
-    indices = (-scores).argsort()[:, :5] # take top 5 results
-    classifications = []
-    for image_index, index_list in enumerate(indices):
-        result = []
-        for i in index_list:
-            # 'i' is a category in labels and also an index into scores
-            if labels is None:
-                label = 'Class #%s' % i
-            else:
-                label = labels[i]
-            result.append((label, round(100.0*scores[image_index, i],4)))
-        classifications.append(result)
-
-    for index, classification in enumerate(classifications):
-        print '{:-^80}'.format(' Prediction for %s ' % image_files[index])
-        for label, confidence in classification:
-            print '{:9.4%} - "{}"'.format(confidence/100.0, label)
-        print
-
+    return scores[0][1]
 
 if __name__ == '__main__':
-    script_start_time = time.time()
+    positive_prob = classify('caffe/model/kandel.caffemodel', 'caffe/model/deploy.prototxt', [sys.argv[1]],
+            'caffe/model/mean.binaryproto', None, False)
 
-    parser = argparse.ArgumentParser(description='Classification example - DIGITS')
-
-    ### Positional arguments
-
-    parser.add_argument('caffemodel',   help='Path to a .caffemodel')
-    parser.add_argument('deploy_file',  help='Path to the deploy file')
-    parser.add_argument('image_file',
-                        nargs='+',
-                        help='Path[s] to an image')
-
-    ### Optional arguments
-
-    parser.add_argument('-m', '--mean',
-            help='Path to a mean file (*.npy)')
-    parser.add_argument('-l', '--labels',
-            help='Path to a labels file')
-    parser.add_argument('--batch-size',
-                        type=int)
-    parser.add_argument('--nogpu',
-            action='store_true',
-            help="Don't use the GPU")
-
-    args = vars(parser.parse_args())
-
-    classify(args['caffemodel'], args['deploy_file'], args['image_file'],
-            args['mean'], args['labels'], args['batch_size'], not args['nogpu'])
-
-    print 'Script took %f seconds.' % (time.time() - script_start_time,)
+    print positive_prob
