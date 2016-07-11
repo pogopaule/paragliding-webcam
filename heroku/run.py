@@ -15,7 +15,7 @@ def run():
     except ImgurClientError as e:
         print(e.error_message)
 
-    url = current_image_url()
+    url = current_image_url(2)
     try:
         client.upload_from_url(url, config={'album': 'BN5AE'}, anon=False)
         print("Uploaded " + url)
