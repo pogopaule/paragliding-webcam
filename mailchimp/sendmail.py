@@ -1,17 +1,15 @@
 import os
 import requests
 
-from common.utils import current_image_url
-
 api_url = "https://us12.api.mailchimp.com/3.0/"
 api_key = os.environ['MAILCHIMP_APIKEY']
 
-def create_content():
+def create_content(url):
     f = open('mailchimp/email-template.html', 'r')
     html = f.read()
-    return html.replace('*|WEBCAM_URL|*', current_image_url())
+    return html.replace('*|WEBCAM_URL|*', url)
 
-def create_campaign():
+def create_campaign(url):
     campaign_data = {
             'type': 'regular',
             'recipients': {
@@ -29,7 +27,7 @@ def create_campaign():
 
 
     campaign_data = {
-            'html': create_content()
+            'html': create_content(url)
             }
     endpoint = api_url + 'campaigns/' + campaign_id + '/content'
     response = requests.put(endpoint, auth=('apikey', api_key), json=campaign_data)
@@ -38,7 +36,3 @@ def create_campaign():
 def send_mail(campaign_id):
     endpoint = api_url + 'campaigns/' + campaign_id + '/actions/send'
     response = requests.post(endpoint, auth=('apikey', api_key))
-
-
-campaign_id = create_campaign()
-send_mail(campaign_id)
