@@ -9,3 +9,6 @@ ADD kandelcaffe/model/deploy.prototxt kandelcaffe/model/kandel.caffemodel kandel
 ENV CAFFE_DIR /root/caffe
 
 RUN pip install -r paragliding-webcam/requirements.txt
+RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
+CMD cd paragliding-webcam && python start.py
