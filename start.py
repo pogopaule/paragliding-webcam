@@ -5,24 +5,30 @@ import mailchimp.sendmail
 import common.utils
 import datetime
 
-next_hour = 8
 
 def calculate_probability(url):
     return kandelcaffe.digits.classify('kandelcaffe/model/kandel.caffemodel', 'kandelcaffe/model/deploy.prototxt', [url], 'kandelcaffe/model/mean.binaryproto', None, False)
 
 def job():
-    global next_hour
+    print '------------------'
+    print datetime.datetime.now()
+
     hour = datetime.datetime.now().hour
-    if hour > 7 and hour >= next_hour and hour < 22:
-        url = common.utils.current_image_url(0)
+    url = common.utils.current_image_url(0)
+    print url
+    try:
         prob = calculate_probability(url)
+        print prob
         if prob > 0.6:
             campaign_id = mailchimp.sendmail.create_campaign(url)
             mailchimp.sendmail.send_mail(campaign_id)
             print 'mail!'
-            next_hour = hour + 4
+    except IOError:
+        print 'Could not load image'
 
 schedule.every(15).minutes.do(job)
+
+job()
 
 while True:
     schedule.run_pending()
