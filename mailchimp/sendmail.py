@@ -16,7 +16,7 @@ def create_campaign(url):
                 'list_id': 'd6d1d87606'
                 },
             'settings': {
-                'subject_line': 'Es scheint jemand fliegen zu gehen!',
+                'subject_line': 'Jemand geht am Kandel fliegen',
                 'from_name': 'Kandel Webcam',
                 'reply_to': 'kandel-webcam@posteo.de'
                 }
