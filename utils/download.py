@@ -3,6 +3,7 @@ import urllib
 import time
 import random
 import io
+import sys
 
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
@@ -58,5 +59,7 @@ for place in places:
                 fd = urllib.urlopen(image.link)
                 image_file = io.BytesIO(fd.read())
                 Image.open(image_file).crop((0, 500, 1500, 1100)).save(fullfilename)
+                sys.stdout.write('.')
+                sys.stdout.flush()
             except IOError:
-                print 'Could not download: ' + image.link
+                print('Could not download: ' + image.link)
