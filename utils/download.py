@@ -2,6 +2,7 @@ import os
 import urllib
 import time
 import random
+import io
 
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
@@ -54,6 +55,8 @@ for place in places:
             filename = time.strftime('%Y-%m-%d_%H-%M.jpg', time.localtime(image.datetime))
             fullfilename = os.path.join( path, filename)
             try:
-                Image.open(urllib.urlopen(image.link)).crop((0, 500, 1500, 1100)).save(fullfilename)
+                fd = urllib.urlopen(image.link)
+                image_file = io.BytesIO(fd.read())
+                Image.open(image_file).crop((0, 500, 1500, 1100)).save(fullfilename)
             except IOError:
                 print 'Could not download: ' + image.link
