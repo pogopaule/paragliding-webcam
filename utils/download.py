@@ -53,4 +53,7 @@ for place in places:
         for image in random.sample(client.get_album_images(album['id']), min_image_number):
             filename = time.strftime('%Y-%m-%d_%H-%M.jpg', time.localtime(image.datetime))
             fullfilename = os.path.join( path, filename)
-            Image.open(urllib.urlopen(image.link)).crop((0, 500, 1500, 1100)).save(fullfilename)
+            try:
+                Image.open(urllib.urlopen(image.link)).crop((0, 500, 1500, 1100)).save(fullfilename)
+            except IOError:
+                print 'Could not download: ' + image.link
