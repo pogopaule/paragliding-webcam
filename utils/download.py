@@ -1,9 +1,9 @@
 import os
 import urllib
-import time
 import random
 import io
 import sys
+import hashlib
 
 from imgurpython import ImgurClient
 from imgurpython.helpers.error import ImgurClientError
@@ -53,12 +53,15 @@ for place in places:
             os.makedirs(path)
 
         for image in random.sample(client.get_album_images(album['id']), min_image_number):
-            filename = time.strftime('%Y-%m-%d_%H-%M.jpg', time.localtime(image.datetime))
-            fullfilename = os.path.join( path, filename)
             try:
                 fd = urllib.urlopen(image.link)
                 image_file = io.BytesIO(fd.read())
-                Image.open(image_file).crop((0, 500, 1500, 1100)).save(fullfilename)
+                image = Image.open(image_file)
+                md5 = hashlib.md5()
+                md5.update(image.tobytes().decode('base64'))
+                filename = md5.hexdigest() + '.jpg'
+                fullfilename = os.path.join(path, filename)
+                image.crop((0, 500, 1500, 1100)).save(fullfilename)
                 sys.stdout.write('.')
                 sys.stdout.flush()
             except IOError:
