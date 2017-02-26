@@ -68,4 +68,4 @@ for place in places:
                 if hasattr(image, 'link'):
                     print('Could not download: ' + image.link)
                 else:
-                    print('Could not download: ' + image)
+                    print('Could not download: ' + str(image))
