@@ -65,4 +65,7 @@ for place in places:
                 sys.stdout.write('.')
                 sys.stdout.flush()
             except IOError:
-                print('Could not download: ' + image.link)
+                if hasattr(image, 'link'):
+                    print('Could not download: ' + image.link)
+                else:
+                    print('Could not download: ' + image)
