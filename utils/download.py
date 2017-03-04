@@ -56,7 +56,7 @@ for place in places:
                 md5.update(image.tobytes().decode('base64'))
                 filename = md5.hexdigest() + '.jpg'
                 fullfilename = os.path.join(path, filename)
-                image.crop((0, 500, 1500, 1100)).save(fullfilename)
+                image.crop((100, 700, 1300, 450)).save(fullfilename)
                 sys.stdout.write('.')
                 sys.stdout.flush()
             except IOError:
