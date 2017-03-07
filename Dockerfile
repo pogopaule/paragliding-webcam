@@ -11,4 +11,6 @@ ENV CAFFE_DIR /root/caffe
 RUN pip install -r paragliding-webcam/requirements.txt
 RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
+RUN sudo ln /dev/null /dev/raw1394
+
 CMD cd paragliding-webcam && python start.py
