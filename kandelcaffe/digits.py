@@ -92,7 +92,11 @@ def load_image(url, height, width, mode='RGB'):
     mode -- the PIL mode that the image should be converted to
         (RGB for color or L for grayscale)
     """
-    image = PIL.Image.open(urllib.urlopen(url)).crop((0, 500, 1500, 1100))
+    left = 200
+    top = 750
+    width = 1200
+    height = 350
+    image = PIL.Image.open(urllib.urlopen(url)).crop((left, top, left+width, top+height))
     image = image.convert(mode)
     image = np.array(image)
     # squash
